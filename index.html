@@ -1,0 +1,208 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chào mừng đến với Trang Web của tôi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            line-height: 1.8;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #555;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        .subheading {
+            color: #555;
+            font-size: 1.1em;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        ul li {
+            background: #ffffff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        ul li:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        ul li .subtext {
+            font-size: 0.9em;
+            color: #555;
+            font-style: italic;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        img:hover {
+            transform: scale(1.02);
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            color: #e74c3c;
+            text-decoration: underline;
+        }
+        section {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            color: #555;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+        .image-caption .subtext {
+            font-size: 0.9em;
+            color: #555;
+            font-style: italic;
+            display: block;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            section {
+                padding: 15px;
+            }
+            .subtitle, .subheading {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Chào mừng đến với Trang Web của tôi</h1>
+    <p class="subtitle">Welcome to My Website</p>
+
+    <section>
+        <h2>Danh sách sở thích</h2>
+        <p class="subheading">List of Hobbies</p>
+        <ul>
+            <li>Đọc sách <span class="subtext">(Reading Books)</span></li>
+            <li>Du lịch <span class="subtext">(Traveling)</span></li>
+            <li>Lập trình web <span class="subtext">(Web Programming)</span></li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Hình ảnh yêu thích</h2>
+        <p class="subheading">Favorite Images</p>
+        <img src="https://picsum.photos/400/300?image=100" alt="Hình ảnh minh họa sách và đọc sách">
+        <p class="image-caption">Hình ảnh minh họa niềm vui đọc sách <span class="subtext">(Illustration of the joy of reading books)</span></p>
+        <img src="https://picsum.photos/400/300?image=200" alt="Hình ảnh minh họa cảnh du lịch">
+        <p class="image-caption">Hình ảnh minh họa cảnh du lịch tuyệt đẹp <span class="subtext">(Illustration of beautiful travel scenes)</span></p>
+        <img src="https://picsum.photos/400/300?image=300" alt="Hình ảnh minh họa lập trình web">
+        <p class="image-caption">Hình ảnh minh họa lập trình web <span class="subtext">(Illustration of web programming)</span></p>
+    </section>
+
+    <section>
+        <h2>Liên kết hữu ích</h2>
+        <p class="subheading">Useful Links</p>
+        <p><a href="https://www.w3schools.com/html/" target="_blank">Truy cập W3Schools để học thêm về HTML.</a> <span class="subtext">(Visit W3Schools to learn more about HTML.)</span></p>
+    </section>
+
+    <footer>
+        <p>© 2025 Trang Web của tôi <span class="subtext">(My Website)</span></p>
+    </footer>
+</body>
+</html>
